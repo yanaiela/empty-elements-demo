@@ -17,6 +17,8 @@ export class HelpWidget extends React.PureComponent<EmptyProps,State> {
     constructor(p:EmptyProps){
         super(p);
         this.state={infoOpen:false}
+        this.closeInfo=this.closeInfo.bind(this);
+        this.toggleInfo=this.toggleInfo.bind(this);
     }
     /**
      * Returns whether there is an answer and whether that answer is for
@@ -29,18 +31,17 @@ export class HelpWidget extends React.PureComponent<EmptyProps,State> {
          this.setState({infoOpen:false})
     }
     toggleInfo(){
-        this.setState(state=>({infoOpen:!state.infoOpen}))
-        console.log('changed')
+        this.setState(state=>({infoOpen:!state.infoOpen}));
     }
 
     render() {
         // const outer_state
 
         return (
-            <Info onClick={this.toggleInfo.bind(this)}>
-                <Button/>
+            <Info >
+                <Button onClick={this.toggleInfo}/>
                 <div className="inner" style={{transform:this.state.infoOpen? 'rotate(-4deg) translate(-20px, 35px) scale(1)':'rotate(51deg) translate(312px, 6px) scale(0.1)' }}>
-                    <CloseButton onClick={this.closeInfo.bind(this)}/>
+                    <CloseButton onClick={this.closeInfo}/>
                     <div style={{overflow:'auto',height:'100%',  padding: '30px'}}>
                         <h3>What are empty elements?</h3>
                         <p>Elments that are empty.

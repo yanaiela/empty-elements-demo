@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import * as React from 'react';
 import {Result} from '../api';
+import {Loading} from "./shared";
 
 interface CheckerProps {
     result?:Result
@@ -27,7 +28,7 @@ export  class Checker extends React.PureComponent<CheckerProps> {
 
 
         if(this.props.result === undefined){
-            return (null);
+            return (<Loading/>);
         }
 
 
@@ -64,24 +65,28 @@ const Check: React.SFC<{ completion: string }> = ({ completion }) => (
 );
 const InnerText =styled.div`
 position: absolute;
-top: -45px;
+top: -60px;
 color: red;
 width: 400px;
 text-align: center;
 display: block;
 margin-left: -180px;
+font-size: 40px;
 `;
 
 const CheckerDiv =styled.div`
-position:relative;
-font-size:40px;
+    position: relative;
+    font-size: 45px;
+    line-height: 80px;
+
 > div{
         display:inline-block;
+        position: relative;
     }
 `;
 const  Tick =styled.div`
     display: inline-block;
-    width: 0.5em;
+    width: 15px;
     :before{
         background: transparent url('tick.png');
         content: "";
@@ -90,7 +95,7 @@ const  Tick =styled.div`
         position: absolute;
         width: 60px;
         height: 60px;
-        top: -26px;
+        top: -8px;
         margin-left: -18px;
     }
 `;
@@ -98,7 +103,6 @@ const  Tick =styled.div`
 const CheckInner = styled.div`
 
     font-size:30px;
-    
     
 `;
 /**

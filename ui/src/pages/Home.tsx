@@ -45,8 +45,9 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
             query: '',
             view: View.INPUT
         };
-        this.dostuff = this.dostuff.bind(this);
+        // this.dostuff = this.dostuff.bind(this);
         this.fetchEmpties=this.fetchEmpties.bind(this);
+        this.onFocusText=this.onFocusText.bind(this);
     }
 
     /**
@@ -73,7 +74,7 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
         // query. We use this as a semaphore / lock of sorts, since the
         // API query is asynchronous.
         // const originalQuery = this.state.query;
-        this.setState({ view: View.RESULT, query:txt }, () => {
+        this.setState({ view: View.RESULT, query:txt,result:undefined }, () => {
             solve(this.state.query)
                 .then(result => {
                     // When the API returns successfully we make sure that
@@ -231,19 +232,24 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
         // this.fetchAnswer();
     };
 
-    dostuff() {
-        this.setState({view: this.state.view == View.INPUT ? View.RESULT : View.INPUT})
+
+
+    onFocusText(ev: React.FocusEvent<HTMLInputElement>){
+        this.setState({view: View.INPUT});
+        // console.log(ev);
     }
+
+    // dostuff() {
+    //     this.setState({view: this.state.view == View.INPUT ? View.RESULT : View.INPUT})
+    // }
 
     render() {
         // const outer_state
-
-
         return (
             <React.Fragment>
                 <FlexBoxVert>
                     <div style={{flex: this.state.view == View.INPUT ? 10 : 1}}>
-                        <input placeholder="Enter a sentence..." onKeyUp={this.handleQuerySubmit}
+                        <input placeholder="Enter a sentence..." onKeyUp={this.handleQuerySubmit} onFocus={this.onFocusText}
                                style={{
                                    border: 'none', resize: 'none',
                                    fontSize: '30px',
@@ -251,55 +257,15 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
                                    transition: 'all 300ms ease-in-out',
                                    transform: this.state.view != View.INPUT ? 'scale(0.5,0.5)' : 'none',
                                }}/>
-
                     </div>
-                    <div style={{flex: this.state.view == View.INPUT ? 1 : 6}}>
-                        <Checker result={this.state.result}/>
+                    <div style={{flex: this.state.view == View.INPUT ? 1 : 3,opacity: this.state.view == View.INPUT ? 0 : 1}}>
+                        <Checker result={this.state.result} />
                     </div>
                     <div style={{flex: 1}}></div>
                     {/*<SubmitButton onClick={this.dostuff}>Submit</SubmitButton>*/}
                 </FlexBoxVert>
                 <HelpWidget/>
-                {/*<p>Welcome to your new, template application.</p>*/}
-                {/*<p>*/}
-                {/*Enter a question and answers below to see what answer our*/}
-                {/*application selects.*/}
-                {/*</p>*/}
-                {/*<Form onSubmit={this.handleSubmit}>*/}
-                {/*<InputLabel>Question:</InputLabel>*/}
-                {/*<TextArea*/}
-                {/*autosize={{minRows: 4, maxRows: 6}}*/}
-                {/*placeholder="Enter a question"*/}
-                {/*value={this.state.query.question}*/}
-                {/*required={true}*/}
-                {/*onChange={this.handleQuestionChange} />*/}
-                {/*<InputLabel>Answer 1:</InputLabel>*/}
-                {/*<TextArea*/}
-                {/*autosize={{minRows: 1, maxRows: 4}}*/}
-                {/*placeholder="Enter the first possible answer"*/}
-                {/*required={true}*/}
-                {/*value={this.state.query.choices[0]}*/}
-                {/*onChange={this.handleFirstAnswerChange} />*/}
-                {/*<InputLabel>Answer 2:</InputLabel>*/}
-                {/*<TextArea*/}
-                {/*autosize={{minRows: 1, maxRows: 4}}*/}
-                {/*placeholder="Enter the second possible answer"*/}
-                {/*required={true}*/}
-                {/*value={this.state.query.choices[1]}*/}
-                {/*onChange={this.handleSecondAnswerChange} />*/}
-                {/*<SubmitContainer>*/}
-                {/*<SubmitButton>Submit</SubmitButton>*/}
-                {/*{this.state.view === View.INPUT*/}
-                {/*? <Loading />*/}
-                {/*: null}*/}
-                {/*{this.state.view === View.ERROR && this.state.error*/}
-                {/*? <Error message={this.state.error} />*/}
-                {/*: null}*/}
-                {/*</SubmitContainer>*/}
-                {/*</Form>*/}
-                {/*{this.state.view === View.RESULT && this.state.RESULT*/}
-                {/*? <AnswerInfo answer={this.state.answer} />*/}
-                {/*: null}*/}
+
             </React.Fragment>
         )
     }
