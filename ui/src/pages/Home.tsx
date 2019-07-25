@@ -48,6 +48,7 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
         // this.dostuff = this.dostuff.bind(this);
         this.fetchEmpties=this.fetchEmpties.bind(this);
         this.onFocusText=this.onFocusText.bind(this);
+        this.generateSentence=this.generateSentence.bind(this);
     }
 
     /**
@@ -234,6 +235,32 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
 
 
 
+
+    generateSentence() {
+        if (this.state.view !== View.INPUT) {
+            return;
+        }
+        const sentences = [
+            // "Graduates continue to receive Christel House services while they continue their education.",
+            // "I would continue the case if the consensus among the committee was to continue to do so.",
+            // "The event will not continue, with the owner of the bar deciding not to continue  the tradition.",
+            "Baldwin wanted to continue the tradition.",
+            "I would certainly continue these tasks.",
+            "But he obviously wants to continue his outing attempts.",
+            "Garoff asks her to continue  her story .",
+            "Cassandra chose to use her powers for good than to continue her evil deeds.",
+            "You enjoy music, and I enjoy music.",
+            // "Some goths may enjoy  hardcore punk , some may enjoy metal but generally they enjoy goth rock.",
+            "I enjoy Wikipedia, and enjoy contributing to it as well.",
+            "I especially enjoy good landscape pictures.",
+            "He does not enjoy school trips.",
+            "That's why I hate the book."
+        ];
+
+        const rnd = sentences[Math.floor(Math.random() * sentences.length)];
+        (document.getElementById('inpsent')! as HTMLInputElement).value=rnd;
+    }
+
     onFocusText(ev: React.FocusEvent<HTMLInputElement>){
         this.setState({view: View.INPUT});
         // console.log(ev);
@@ -249,7 +276,7 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
             <React.Fragment>
                 <FlexBoxVert>
                     <div style={{flex: this.state.view == View.INPUT ? 10 : 1}}>
-                        <input placeholder="Enter a sentence..." onKeyUp={this.handleQuerySubmit} onFocus={this.onFocusText}
+                        <input id="inpsent" placeholder="Enter a sentence..." onKeyUp={this.handleQuerySubmit} onFocus={this.onFocusText}
                                style={{
                                    border: 'none', resize: 'none',
                                    fontSize: '30px',
@@ -257,6 +284,10 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
                                    transition: 'all 300ms ease-in-out',
                                    transform: this.state.view != View.INPUT ? 'scale(0.5,0.5)' : 'none',
                                }}/>
+                        <DiceBut  style={{opacity: this.state.view == View.INPUT ? 1 : 0,}} >
+                            <div  style={{cursor: this.state.view == View.INPUT ? 'pointer' : 'default'}} onClick={this.generateSentence}>Random</div>
+                            <div  style={{cursor: this.state.view == View.INPUT ? 'pointer' : 'default'}} onClick={(e)=>this.fetchEmpties((document.getElementById('inpsent')! as HTMLInputElement).value)}>Predict</div>
+                        </DiceBut>
                     </div>
                     <div style={{flex: this.state.view == View.INPUT ? 1 : 3,opacity: this.state.view == View.INPUT ? 0 : 1}}>
                         <Checker result={this.state.result} />
@@ -282,6 +313,25 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
  * with it here's quick introduction:
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS
  */
+
+const DiceBut = styled.div`
+    width:100%;
+    text-align:center;
+    transition: all 300ms ease-in-out;
+    > div{
+        cursor: pointer;
+        background-color: ${({theme}) => theme.palette.background.dark};
+        width: 200px;
+        display: inline-block;
+        border-radius: 5px;
+        line-height: 40px;
+        color: white;
+        margin: 20px;
+    }
+    
+    
+`;
+
 
 const FlexBoxVert = styled.div`
     display: flex;

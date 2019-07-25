@@ -44,36 +44,16 @@ export class HelpWidget extends React.PureComponent<EmptyProps,State> {
                     <CloseButton onClick={this.closeInfo}/>
                     <div style={{overflow:'auto',height:'100%',  padding: '30px'}}>
                         <h3>What are empty elements?</h3>
-                        <p>Elments that are empty.
-                        </p>
-                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-                            ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu
-                            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                            officia
-                            deserunt mollit anim id est laborum.</p>
 
-                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-                            ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu
-                            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                            officia
-                            deserunt mollit anim id est laborum.</p>
-                        <p>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                            labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-                            ut aliquip
-                            ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-                            cillum dolore eu
-                            fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-                            officia
-                            deserunt mollit anim id est laborum.</p>
+                        <p>Aspect is a grammatical category that expresses how an action, event, or state, denoted by a verb, extends over time. Perfective aspect is used in referring to an event conceived as bounded and unitary, without reference to any flow of time during ("I helped him"). Imperfective aspect is used for situations conceived as existing continuously or repetitively as time flows ("I was helping him"; "I used to help people").
+                        </p><p>
+Further distinctions can be made, for example, to distinguish states and ongoing actions (continuous and progressive aspects) from repetitive actions (habitual aspect).
+</p><p>
+Certain aspectual distinctions express a relation in time between the event and the time of reference. This is the case with the perfect aspect, which indicates that an event occurred prior to (but has continuing relevance at) the time of reference: "I have eaten"; "I had eaten"; "I will have eaten".[1]
+</p><p>
+Different languages make different grammatical aspectual distinctions; some (such as Standard German; see below) do not make any. The marking of aspect is often conflated with the marking of tense and mood (see tense–aspect–mood). Aspectual distinctions may be restricted to certain tenses: in Latin and the Romance languages, for example, the perfective–imperfective distinction is marked in the past tense, by the division between preterites and imperfects. Explicit consideration of aspect as a category first arose out of study of the Slavic languages; here verbs often occur in pairs, with two related verbs being used respectively for imperfective and perfective meanings.
+</p><p>
+The concept of grammatical aspect should not be confused with perfect and imperfect verb forms; the meanings of the latter terms are somewhat different, and in some languages, the common names used for verb forms may not follow the actual aspects precisely. </p>
                     </div>
                 </div>
             </Info>
