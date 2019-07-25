@@ -1,7 +1,6 @@
 import axios, { AxiosPromise } from 'axios';
 
-import { Query } from './Query';
-import { Answer } from './Answer';
+import { Result } from './Result';
 
 /**
  * This method fetches an answer by hitting /api/solve, which is defined in
@@ -17,9 +16,9 @@ import { Answer } from './Answer';
  *
  * @returns {Promise<Answer>}
  */
-export function solve(query: Query): Promise<Answer> {
+export function solve(txt: string): Promise<Result> {
     return (
-        axios.post('/api/solve', query)
+        axios.post('/api/getempty', {txt})
              .then(resp => resp.data)
     );
 }

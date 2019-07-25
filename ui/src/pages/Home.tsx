@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { RouteComponentProps } from 'react-router';
-import { Button, TextArea } from '@allenai/varnish/components';
+import {RouteComponentProps} from 'react-router';
+import {Button, TextArea} from '@allenai/varnish/components';
 
-import { AnswerInfo, Loading, Error } from '../components';
-import { solve, Answer, Query } from '../api';
+import {Loading, Error, Checker, HelpWidget} from '../components';
+import {solve, Result} from '../api';
 
 /**
  * We use a state machine to capture the current state of the view. Since
@@ -15,7 +15,7 @@ import { solve, Answer, Query } from '../api';
  * what works best for your use case!
  */
 enum View {
-    EMPTY, LOADING, ANSWER, ERROR
+    INPUT, RESULT, ERROR
 }
 
 /**
@@ -30,20 +30,25 @@ enum View {
  * complexity to your UI.
  */
 interface State {
-    query: Query,
+    query: string,
     view: View,
-    answer?: Answer,
+    result?: Result,
     error?: string
 };
 
 export default class Home extends React.PureComponent<RouteComponentProps, State> {
+
     constructor(props: RouteComponentProps) {
         super(props);
         this.state = {
-            query: Query.fromQueryString(props.location),
-            view: View.EMPTY
+            // query: Query.fromQueryString(props.location),
+            query: '',
+            view: View.INPUT
         };
+        this.dostuff = this.dostuff.bind(this);
+        this.fetchEmpties=this.fetchEmpties.bind(this);
     }
+
     /**
      * Returns whether there is an answer and whether that answer is for
      * the current query.
@@ -51,40 +56,42 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      * @returns {boolean}
      */
     hasAnswerForCurrentQuery() {
-        return (
-            this.state.answer &&
-            this.state.answer.query.equals(this.state.query)
-        );
+        return true;
+        // return (
+        //     this.state.result &&
+        //     this.state.result.query.equals(this.state.query)
+        // );
     }
+
     /**
      * Submits an API query for an answer for the current query.
      *
      * @returns {void}
      */
-    fetchAnswer() {
+    fetchEmpties(txt:string) {
         // We store a local variable capturing the value of the current
         // query. We use this as a semaphore / lock of sorts, since the
         // API query is asynchronous.
-        const originalQuery = this.state.query;
-        this.setState({ view: View.LOADING }, () => {
+        // const originalQuery = this.state.query;
+        this.setState({ view: View.RESULT, query:txt }, () => {
             solve(this.state.query)
-                .then(answer => {
+                .then(result => {
                     // When the API returns successfully we make sure that
                     // the returned answer is for the last submitted query.
                     // This way we avoid displaying an answer that's not
                     // associated with the last query the user submitted.
-                    if (this.state.query.equals(originalQuery)) {
+                    if (this.state.query === txt) {
                         this.setState({
-                            view: View.ANSWER,
+                            view: View.RESULT,
                             error: undefined,
-                            answer
+                            result
                         });
                     }
                 })
                 .catch(err => {
                     // Again, make sure that the error is associated with the
                     // last submitted query.
-                    if (this.state.query.equals(originalQuery)) {
+                    if (this.state.query === txt) {
                         let error;
                         if (err.response &&
                             err.response.data &&
@@ -95,13 +102,14 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
                         }
                         this.setState({
                             view: View.ERROR,
-                            answer: undefined,
+                            result: undefined,
                             error
                         });
                     }
                 });
         })
     }
+
     /**
      * This handler updates the query whenever the user changes the question
      * text. It's bound to the question input's `onChange` handler in the
@@ -109,28 +117,28 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      *
      * @see https://reactjs.org/docs/forms.html
      */
-    handleQuestionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const value = event.target.value;
-        this.setState(state => ({
-            query: new Query(value, state.query.choices)
-        }));
-    };
-    /**
-     * This handler updates the query whenever the user changes the first
-     * answer text. It's bound to the answer input's `onChange` handler in the
-     * `render` method below.
-     *
-     * @see https://reactjs.org/docs/forms.html
-     */
-    handleFirstAnswerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const value = event.target.value;
-        this.setState(state => ({
-            query: new Query(state.query.question, [
-                value,
-                state.query.choices[1]
-            ])
-        }));
-    }
+    // handleQuestionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    //     const value = event.target.value;
+    //     this.setState(state => ({
+    //         query: new Query(value, state.query.choices)
+    //     }));
+    // };
+    // /**
+    //  * This handler updates the query whenever the user changes the first
+    //  * answer text. It's bound to the answer input's `onChange` handler in the
+    //  * `render` method below.
+    //  *
+    //  * @see https://reactjs.org/docs/forms.html
+    //  */
+    // handleFirstAnswerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    //     const value = event.target.value;
+    //     this.setState(state => ({
+    //         query: new Query(state.query.question, [
+    //             value,
+    //             state.query.choices[1]
+    //         ])
+    //     }));
+    // }
     /**
      * This handler updates the query whenever the user changes the second
      * answer text. It's bound to the answer input's `onChange` handler in the
@@ -138,15 +146,15 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      *
      * @see https://reactjs.org/docs/forms.html
      */
-    handleSecondAnswerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const value = event.target.value;
-        this.setState(state => ({
-            query: new Query(state.query.question, [
-                state.query.choices[0],
-                value
-            ])
-        }));
-    }
+    // handleSecondAnswerChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    //     const value = event.target.value;
+    //     this.setState(state => ({
+    //         query: new Query(state.query.question, [
+    //             state.query.choices[0],
+    //             value
+    //         ])
+    //     }));
+    // }
     /**
      * This handler is invoked when the form is submitted, which occurs when
      * the user clicks the submit button or when the user clicks input while
@@ -157,18 +165,18 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      *
      * @see https://reactjs.org/docs/forms.html
      */
-    handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        // By default, HTML forms make a request back to the server. We
-        // prevent that and instead submit the request asynchronously.
-        event.preventDefault();
-
-        // We add the query params to the URL, so that users can link to
-        // our demo and share noteworthy cases, edge cases, etc.
-        this.props.history.push(`/?${this.state.query.toQueryString()}`);
-
-        // Query the answer and display the result.
-        this.fetchAnswer();
-    }
+    // handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //     // By default, HTML forms make a request back to the server. We
+    //     // prevent that and instead submit the request asynchronously.
+    //     event.preventDefault();
+    //
+    //     // We add the query params to the URL, so that users can link to
+    //     // our demo and share noteworthy cases, edge cases, etc.
+    //     this.props.history.push(`/?${this.state.query.toQueryString()}`);
+    //
+    //     // Query the answer and display the result.
+    //     this.fetchAnswer();
+    // }
     /**
      * This is a lifecycle function that's called by React after the component
      * has first been rendered.
@@ -180,13 +188,16 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      * @see https://reactjs.org/docs/state-and-lifecycle.html
      */
     componentDidMount() {
-        if (
-            this.state.query.isValid() &&
-            !this.hasAnswerForCurrentQuery()
-        ) {
-            this.fetchAnswer();
-        }
+        // if (
+        //     this.state.query.isValid() &&
+        //     !this.hasAnswerForCurrentQuery()
+        // ) {
+        //     this.fetchAnswer();
+        // }
     }
+
+
+
     /**
      * The render method defines what's rendered. When writing yours keep in
      * mind that you should try to make it a "pure" function of the component's
@@ -199,49 +210,96 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
      * changes to the document as possible -- which can be an expensive process
      * and lead to slow interfaces.
      */
+    handleQuerySubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.keyCode == 13) {
+            let value = (event.target as HTMLInputElement).value;
+            // console.log(value);
+
+            this.fetchEmpties(value);
+             (event.target as HTMLInputElement).blur()
+
+        }
+        // By default, HTML forms make a request back to the server. We
+        // // prevent that and instead submit the request asynchronously.
+        // event.preventDefault();
+        //
+        // // We add the query params to the URL, so that users can link to
+        // // our demo and share noteworthy cases, edge cases, etc.
+        // // this.props.history.push(`/?${this.state.query.toQueryString()}`);
+        //
+        // // Query the answer and display the result.
+        // this.fetchAnswer();
+    };
+
+    dostuff() {
+        this.setState({view: this.state.view == View.INPUT ? View.RESULT : View.INPUT})
+    }
+
     render() {
+        // const outer_state
+
+
         return (
             <React.Fragment>
-                <p>Welcome to your new, template application.</p>
-                <p>
-                    Enter a question and answers below to see what answer our
-                    application selects.
-                </p>
-                <Form onSubmit={this.handleSubmit}>
-                    <InputLabel>Question:</InputLabel>
-                    <TextArea
-                        autosize={{minRows: 4, maxRows: 6}}
-                        placeholder="Enter a question"
-                        value={this.state.query.question}
-                        required={true}
-                        onChange={this.handleQuestionChange} />
-                    <InputLabel>Answer 1:</InputLabel>
-                    <TextArea
-                        autosize={{minRows: 1, maxRows: 4}}
-                        placeholder="Enter the first possible answer"
-                        required={true}
-                        value={this.state.query.choices[0]}
-                        onChange={this.handleFirstAnswerChange} />
-                     <InputLabel>Answer 2:</InputLabel>
-                    <TextArea
-                        autosize={{minRows: 1, maxRows: 4}}
-                        placeholder="Enter the second possible answer"
-                        required={true}
-                        value={this.state.query.choices[1]}
-                        onChange={this.handleSecondAnswerChange} />
-                    <SubmitContainer>
-                        <SubmitButton>Submit</SubmitButton>
-                        {this.state.view === View.LOADING
-                            ? <Loading />
-                            : null}
-                        {this.state.view === View.ERROR && this.state.error
-                            ? <Error message={this.state.error} />
-                            : null}
-                    </SubmitContainer>
-                </Form>
-                {this.state.view === View.ANSWER && this.state.answer
-                    ? <AnswerInfo answer={this.state.answer} />
-                    : null}
+                <FlexBoxVert>
+                    <div style={{flex: this.state.view == View.INPUT ? 10 : 1}}>
+                        <input placeholder="Enter a sentence..." onKeyUp={this.handleQuerySubmit}
+                               style={{
+                                   border: 'none', resize: 'none',
+                                   fontSize: '30px',
+                                   textAlign: 'center',
+                                   transition: 'all 300ms ease-in-out',
+                                   transform: this.state.view != View.INPUT ? 'scale(0.5,0.5)' : 'none',
+                               }}/>
+
+                    </div>
+                    <div style={{flex: this.state.view == View.INPUT ? 1 : 6}}>
+                        <Checker result={this.state.result}/>
+                    </div>
+                    <div style={{flex: 1}}></div>
+                    {/*<SubmitButton onClick={this.dostuff}>Submit</SubmitButton>*/}
+                </FlexBoxVert>
+                <HelpWidget/>
+                {/*<p>Welcome to your new, template application.</p>*/}
+                {/*<p>*/}
+                {/*Enter a question and answers below to see what answer our*/}
+                {/*application selects.*/}
+                {/*</p>*/}
+                {/*<Form onSubmit={this.handleSubmit}>*/}
+                {/*<InputLabel>Question:</InputLabel>*/}
+                {/*<TextArea*/}
+                {/*autosize={{minRows: 4, maxRows: 6}}*/}
+                {/*placeholder="Enter a question"*/}
+                {/*value={this.state.query.question}*/}
+                {/*required={true}*/}
+                {/*onChange={this.handleQuestionChange} />*/}
+                {/*<InputLabel>Answer 1:</InputLabel>*/}
+                {/*<TextArea*/}
+                {/*autosize={{minRows: 1, maxRows: 4}}*/}
+                {/*placeholder="Enter the first possible answer"*/}
+                {/*required={true}*/}
+                {/*value={this.state.query.choices[0]}*/}
+                {/*onChange={this.handleFirstAnswerChange} />*/}
+                {/*<InputLabel>Answer 2:</InputLabel>*/}
+                {/*<TextArea*/}
+                {/*autosize={{minRows: 1, maxRows: 4}}*/}
+                {/*placeholder="Enter the second possible answer"*/}
+                {/*required={true}*/}
+                {/*value={this.state.query.choices[1]}*/}
+                {/*onChange={this.handleSecondAnswerChange} />*/}
+                {/*<SubmitContainer>*/}
+                {/*<SubmitButton>Submit</SubmitButton>*/}
+                {/*{this.state.view === View.INPUT*/}
+                {/*? <Loading />*/}
+                {/*: null}*/}
+                {/*{this.state.view === View.ERROR && this.state.error*/}
+                {/*? <Error message={this.state.error} />*/}
+                {/*: null}*/}
+                {/*</SubmitContainer>*/}
+                {/*</Form>*/}
+                {/*{this.state.view === View.RESULT && this.state.RESULT*/}
+                {/*? <AnswerInfo answer={this.state.answer} />*/}
+                {/*: null}*/}
             </React.Fragment>
         )
     }
@@ -259,6 +317,22 @@ export default class Home extends React.PureComponent<RouteComponentProps, State
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS
  */
 
+const FlexBoxVert = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    > div{
+        font-size: 20px;
+        transition: all 300ms ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+`;
+
 
 const Form = styled.form`
     margin: ${({theme}) => `0 0 ${theme.spacing.sm}`};
@@ -266,7 +340,7 @@ const Form = styled.form`
 `;
 
 const SubmitButton = styled(Button).attrs({
-    htmlType: 'submit',
+    // htmlType: 'submit',
     variant: 'primary'
 })`
     margin: ${({theme}) => `${theme.spacing.md} ${theme.spacing.md} ${theme.spacing.md} 0`};

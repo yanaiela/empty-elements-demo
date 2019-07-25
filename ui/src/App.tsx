@@ -24,6 +24,7 @@ import {
 } from '@allenai/varnish/components';
 import { Menu } from 'antd';
 
+
 import Home from './pages/Home';
 import About from './pages/About';
 import { AppRoute } from './AppRoute';
@@ -37,12 +38,12 @@ const ROUTES: AppRoute[] = [
         path: '/',
         label: 'Home',
         component: Home
-    },
-    {
-        path: '/about',
-        label: 'About',
-        component: About
-    }
+    }//,
+    // {
+    //     path: '/about',
+    //     label: 'About',
+    //     component: About
+    // }
 ];
 
 export default class App extends React.PureComponent<RouteComponentProps> {
@@ -50,24 +51,24 @@ export default class App extends React.PureComponent<RouteComponentProps> {
         return (
             <BrowserRouter>
                 <Route path="/">
-                    <TransparentLayout>
+                    <TransparentLayout style={{height:'100%',overflow:'hidden'}}>
                         <Header>
-                            <HeaderTitle>Skiff Template</HeaderTitle>
+                            <HeaderTitle>Empty entities demo</HeaderTitle>
                         </Header>
                         <PaddedContent>
-                            <TopMenu
-                                defaultSelectedKeys={[this.props.location.pathname]}>
-                                {ROUTES.map(({ path, label }) => (
-                                    <Menu.Item key={path}>
-                                        <Body>
-                                            <InternalLink to={path}>{label}</InternalLink>
-                                        </Body>
-                                    </Menu.Item>
-                                ))}
-                            </TopMenu>
-                            <Page>
+                            {/*<TopMenu*/}
+                                {/*defaultSelectedKeys={[this.props.location.pathname]}>*/}
+                                {/*{ROUTES.map(({ path, label }) => (*/}
+                                    {/*<Menu.Item key={path}>*/}
+                                        {/*<Body>*/}
+                                            {/*<InternalLink to={path}>{label}</InternalLink>*/}
+                                        {/*</Body>*/}
+                                    {/*</Menu.Item>*/}
+                                {/*))}*/}
+                            {/*</TopMenu>*/}
+                            <Page style={{height:'100%',position:'relative'}}>
                                 {ROUTES.map(({ path, component }) => (
-                                    <Route key={path} path={path} exact component={component} />
+                                    <Route key={path} path={path} exact component={component} style/>
                                 ))}
                             </Page>
                         </PaddedContent>
@@ -78,9 +79,13 @@ export default class App extends React.PureComponent<RouteComponentProps> {
         );
     }
 }
-
-const TopMenu = styled(Menu).attrs({
-    mode: "horizontal"
-})`
-    margin-top: ${({theme}) => theme.spacing.lg};
+const TransparentLayout2 = styled(TransparentLayout)` 
+    height: 100%;
+    position:relative;
+    
 `;
+// const TopMenu = styled(Menu).attrs({
+//     mode: "horizontal"
+// })`
+//     margin-top: ${({theme}) => theme.spacing.lg};
+// `;

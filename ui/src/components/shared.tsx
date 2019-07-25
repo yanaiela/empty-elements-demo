@@ -10,7 +10,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { BodyJumbo, BodySmall, Icon } from '@allenai/varnish/components';
 
-import { Answer } from '../api';
+// import { Answer } from '../api';
 
 export const LightPaper = styled.div`
     max-width: max-content;
@@ -20,15 +20,15 @@ export const LightPaper = styled.div`
     border-radius: ${({theme}) => `${theme.shape.borderRadius}px`};
 `;
 
-export const AnswerInfo: React.SFC<{ answer: Answer }> = ({ answer }) => (
-    <LightPaper>
-        <p>Our system answered:</p>
-        <TwoColumnGrid>
-            <BodyJumbo>“{answer.answer}”</BodyJumbo>
-            <BodySmall>({answer.score} % confidence)</BodySmall>
-        </TwoColumnGrid>
-    </LightPaper>
-);
+// export const AnswerInfo: React.SFC<{ answer: Answer }> = ({ answer }) => (
+//     <LightPaper>
+//         <p>Our system answered:</p>
+//         <TwoColumnGrid>
+//             <BodyJumbo>“{answer.answer}”</BodyJumbo>
+//             <BodySmall>({answer.score} % confidence)</BodySmall>
+//         </TwoColumnGrid>
+//     </LightPaper>
+// );
 
 export const Loading = styled(Icon).attrs({
     type: "loading"
