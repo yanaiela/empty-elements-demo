@@ -11,3 +11,5 @@ ui/build/
 # UI package manager debug output
 ui/*.log
 .skiff/webapp.json
+
+api/app/models/

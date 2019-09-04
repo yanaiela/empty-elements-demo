@@ -18,6 +18,7 @@ RUN chown -R skiff-app:skiff-app /usr/local/src/skiff/app/api/scratch
 # Install Python dependencies
 COPY --chown=skiff-build:skiff-build requirements.txt .
 RUN pip install -r requirements.txt
+RUN python -m spacy download en
 
 # Python dependencies work better when installed as root, so we don't swith
 # to the build user until after they're in place
